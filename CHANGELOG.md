@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-translatable` will be documented in this file
 
+## 4.1.3 - 2019-06-16
+
+- improve dependencies
+
+## 4.1.2 - 2019-06-06
+
+- allow false and true values in translations
+
 ## 4.1.1 - 2019-02-27
 
 - fix service provider error
