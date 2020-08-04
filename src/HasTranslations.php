@@ -20,6 +20,10 @@ trait HasTranslations
 
     public function setAttribute($key, $value)
     {
+        if ($this->isTranslatableAttribute($key) && is_array($value)) {
+            return $this->setTranslations($key, $value);
+        }
+
         // Pass arrays and untranslatable attributes to the parent method.
         if (! $this->isTranslatableAttribute($key) || is_array($value)) {
             return parent::setAttribute($key, $value);
@@ -117,9 +121,12 @@ trait HasTranslations
     {
         $translations = $this->getTranslations($key);
 
-        unset($translations[$locale]);
+        unset(
+            $translations[$locale],
+            $this->$key
+        );
 
-        $this->setAttribute($key, $translations);
+        $this->setTranslations($key, $translations);
 
         return $this;
     }
@@ -167,11 +174,11 @@ trait HasTranslations
             return $locale;
         }
 
-        if (! is_null($fallbackLocale = Config::get('translatable.fallback_locale'))) {
+        if (! is_null($fallbackLocale = config('translatable.fallback_locale'))) {
             return $fallbackLocale;
         }
 
-        if (! is_null($fallbackLocale = Config::get('app.fallback_locale'))) {
+        if (! is_null($fallbackLocale = config('app.fallback_locale'))) {
             return $fallbackLocale;
         }
 
@@ -180,7 +187,7 @@ trait HasTranslations
 
     protected function getLocale(): string
     {
-        return Config::get('app.locale');
+        return config('app.locale');
     }
 
     public function getTranslatableAttributes(): array
